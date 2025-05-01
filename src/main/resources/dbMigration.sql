@@ -32,6 +32,7 @@ CREATE TABLE player (
                         age INT NOT NULL,
                         club_id VARCHAR(36),
                         FOREIGN KEY (club_id) REFERENCES club(id) ON DELETE SET NULL
+                        UNIQUE (club_id, number)
 );
 
 
