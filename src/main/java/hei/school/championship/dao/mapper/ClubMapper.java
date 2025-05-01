@@ -1,5 +1,6 @@
 package hei.school.championship.dao.mapper;
 
+import hei.school.championship.dao.operations.CoachCrudOperations;
 import hei.school.championship.entity.Club;
 import hei.school.championship.entity.Coach;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +14,19 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class ClubMapper implements Function<ResultSet, Club> {
+    private final CoachCrudOperations coachCrudOperations;
 
     @SneakyThrows
     @Override
     public Club apply(ResultSet resultSet) {
+        Coach coach = coachCrudOperations.findById(resultSet.getInt("coach_id"));
 
         Club club = new Club();
         club.setId(resultSet.getString("id"));
         club.setName(resultSet.getString("name"));
         club.setAcronym(resultSet.getString("acronym"));
         club.setYearCreation(resultSet.getInt("year_creation"));
-
-        Coach coach = new Coach();
-        coach.setName(resultSet.getString("coach_name"));
-        coach.setNationality(resultSet.getString("coach_nationality"));
-        return null;
+        club.setCoach(coach);
+        return club;
     }
 }

@@ -27,7 +27,7 @@ CREATE TABLE player (
                          id VARCHAR(36) PRIMARY KEY,
                          name VARCHAR(100) NOT NULL,
                          number INT NOT NULL,
-                         player_position positon NOT NULL,
+                         player_position position NOT NULL,
                          nationality VARCHAR(50) NOT NULL,
                          age INT NOT NULL,
                          club_id VARCHAR(36),
