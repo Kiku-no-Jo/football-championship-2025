@@ -17,10 +17,16 @@ CREATE TABLE club (
     name VARCHAR(100) UNIQUE NOT NULL,
     acronym VARCHAR(3) NOT NULL,
     year_creation INT NOT NULL,
-    stadium VARCHAR(100) NOT NULL,
-    coach_name VARCHAR(100) NOT NULL,
-    coach_nationality VARCHAR(50) NOT NULL
+    stadium VARCHAR(100) NOT NULL
+
 );
+CREATE TABLE coach (
+                      id int PRIMARY KEY,
+                      name VARCHAR(100) UNIQUE NOT NULL,
+                      nationnality VARCHAR(100) NOT NULL
+
+);
+
 
 
 CREATE TABLE player (
