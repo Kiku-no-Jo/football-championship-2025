@@ -12,6 +12,6 @@ import lombok.Setter;
 public class Season {
     private String id;
     private String alias;
-    private String year;
+    private int year;
     private SeasonStatus status;
 }

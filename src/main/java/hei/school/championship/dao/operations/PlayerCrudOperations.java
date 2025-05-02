@@ -95,4 +95,21 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
             return players;
         }
     }
+
+    public List<Player> findByIdClub(String idClub){
+        List<Player> players = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("select id, name, number, nationality, age from player where club_id = ?")) {
+            statement.setString(1, idClub);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Player player = playerMapper.apply(resultSet);
+                    players.add(player);
+                }
+                return players;
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+    }
 }
