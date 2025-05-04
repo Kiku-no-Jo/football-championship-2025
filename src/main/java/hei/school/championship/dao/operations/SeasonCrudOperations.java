@@ -70,7 +70,7 @@ public class SeasonCrudOperations implements CrudOperations<Season> {
         List<Season> seasons = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement("insert into season (id, year, alias, status) values (?, ?, ?, ?)"
+                     connection.prepareStatement("insert into season (id, year, alias, status) values (?, ?, ?, CAST(? AS season_status))"
                              + " on conflict (id) do nothing"
                              + " returning id, year, alias, status");) {
             entities.forEach(entityToSave -> {
@@ -78,7 +78,7 @@ public class SeasonCrudOperations implements CrudOperations<Season> {
                     statement.setString(1, entityToSave.getId());
                     statement.setInt(2, entityToSave.getYear());
                     statement.setString(3, entityToSave.getAlias());
-                    statement.setString(4, String.valueOf(entityToSave.getStatus()));
+                    statement.setString(4, entityToSave.getStatus().name());
                     statement.addBatch(); // group by batch so executed as one query in database
                 } catch (SQLException e) {
                     throw new ServerException(e);
@@ -90,6 +90,24 @@ public class SeasonCrudOperations implements CrudOperations<Season> {
                 }
             }
             return seasons;
+        }
+    }
+
+    public int findLatestSeasonIdNumber() {
+        String sql = "SELECT id FROM season ORDER BY id DESC LIMIT 1";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                String latestId = resultSet.getString("id");
+                // Extract the numeric part (e.g., "S04" → 4)
+                return Integer.parseInt(latestId.substring(1));
+            }
+            return 0; // No seasons exist yet
+        } catch (SQLException e) {
+            throw new ServerException(e);
         }
     }
 

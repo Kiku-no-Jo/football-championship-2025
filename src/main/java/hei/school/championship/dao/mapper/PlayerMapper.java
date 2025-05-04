@@ -1,10 +1,9 @@
 package hei.school.championship.dao.mapper;
 
 import hei.school.championship.dao.operations.ClubCrudOperations;
-import hei.school.championship.dao.operations.CoachCrudOperations;
 import hei.school.championship.entity.Club;
 import hei.school.championship.entity.Player;
-import hei.school.championship.entity.PlayerPostion;
+import hei.school.championship.entity.PlayerPosition;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -27,9 +26,10 @@ public class PlayerMapper implements Function<ResultSet, Player> {
         player.setId(resultSet.getString("id"));
         player.setName(resultSet.getString("name"));
         player.setNumber(resultSet.getInt("number"));
-        player.setPosition(PlayerPostion.valueOf(resultSet.getString("position")));
+        player.setPosition(PlayerPosition.valueOf(resultSet.getString("position")));
+        player.setNationality(resultSet.getString("nationality"));
         player.setAge(resultSet.getInt("age"));
         player.setClub(club);
-        return null;
+        return player;
     }
 }

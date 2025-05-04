@@ -1,6 +1,6 @@
 package hei.school.championship.entity;
 
-public enum PlayerPostion {
+public enum PlayerPosition {
     STRIKER,
     MIDFIELDER,
     DEFENSE,

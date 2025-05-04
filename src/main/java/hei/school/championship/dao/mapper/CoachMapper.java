@@ -17,6 +17,6 @@ public class CoachMapper implements Function<ResultSet, Coach> {
         Coach coach = new Coach();
         coach.setName(resultSet.getString("name"));
         coach.setNationality(resultSet.getString("nationality"));
-        return null;
+        return coach;
     }
 }

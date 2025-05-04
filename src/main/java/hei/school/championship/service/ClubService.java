@@ -14,8 +14,8 @@ import java.util.List;
 public class ClubService {
     private final ClubCrudOperations clubCrudOperations;
 
-    public List<Club> getAllClubs() {
-        return clubCrudOperations.getAll(1, 100);
+    public List<Club> getAllClubs(int page, int size) {
+        return clubCrudOperations.getAll(page, size);
     }
 
     public Club getClubById(String idClub) {

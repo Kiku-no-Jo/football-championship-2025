@@ -11,10 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
         List<Player> players = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "select id, name, number, nationality, age, club_id from player order by id asc limit ? offset ?")) {
+                     "select id, name, number, position, nationality, age, club_id from player order by id asc limit ? offset ?")) {
             statement.setInt(1, size);
             statement.setInt(2, size * (page - 1));
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -52,7 +49,7 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
     public Player findById(String id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "select id, name, number, nationality, age, club_id from player where id = ?")) {
+                     "select id, name, number, position, nationality, age, club_id from player where id = ?")) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -71,17 +68,24 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
         List<Player> players = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement("insert into player (id, name, number, nationality, age, club_id) values (?, ?, ?, ?, ?, ?)"
-                             + " on conflict (id) do nothing"
-                             + " returning id, name, number, nationality, age, club_id");) {
+                     connection.prepareStatement("insert into player (id, name, number, position, nationality, age, club_id) values (?, ?, ?, ?, ?, ?, ?)"
+                             + " on conflict (id) do update"
+                             + " returning id, name, number, position, nationality, age, club_id");) {
             entities.forEach(entityToSave -> {
                 try {
                     statement.setString(1, entityToSave.getId());
                     statement.setString(2, entityToSave.getName());
                     statement.setInt(3, entityToSave.getNumber());
-                    statement.setString(4, entityToSave.getNationality());
-                    statement.setInt(5, entityToSave.getAge());
-                    statement.setString(6, entityToSave.getClub().getId());
+                    statement.setString(4, entityToSave.getPosition().name());
+                    statement.setString(5, entityToSave.getNationality());
+                    statement.setInt(6, entityToSave.getAge());
+
+                    // Handle null club
+                    if (entityToSave.getClub() != null) {
+                        statement.setString(7, entityToSave.getClub().getId());
+                    } else {
+                        statement.setNull(7, Types.VARCHAR);  // Explicitly set NULL for club_id
+                    }
                     statement.addBatch(); // group by batch so executed as one query in database
                 } catch (SQLException e) {
                     throw new ServerException(e);

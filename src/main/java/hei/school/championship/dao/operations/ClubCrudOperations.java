@@ -33,7 +33,7 @@ public class ClubCrudOperations implements CrudOperations<Club> {
         List<Club> clubs = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "select id, name, acronym, yearCreation, stadium, coach_id from club order by name asc limit ? offset ?")) {
+                     "select id, name, acronym, year_creation, stadium, coach_id from club order by name asc limit ? offset ?")) {
             statement.setInt(1, size);
             statement.setInt(2, size * (page - 1));
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -52,7 +52,7 @@ public class ClubCrudOperations implements CrudOperations<Club> {
     public Club findById(String id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "select id, name, acronym, yearCreation, stadium, coach_id from club where id = ?")) {
+                     "select id, name, acronym, year_creation, stadium, coach_id from club where id = ?")) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -71,7 +71,7 @@ public class ClubCrudOperations implements CrudOperations<Club> {
         List<Club> clubs = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement("insert into club (id, name, acronym, yearCreation, stadium, coach_id) values (?, ?, ?, ?, ?, ?)"
+                     connection.prepareStatement("insert into club (id, name, acronym, year_creation, stadium, coach_id) values (?, ?, ?, ?, ?, ?)"
                              + " on conflict (id) do nothing"
                              + " returning id, name, acronym, yearCreation, stadium, coach_id");) {
             entities.forEach(entityToSave -> {
