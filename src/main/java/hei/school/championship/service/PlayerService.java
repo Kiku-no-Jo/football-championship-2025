@@ -1,8 +1,10 @@
 package hei.school.championship.service;
 
 import hei.school.championship.dao.operations.PlayerCrudOperations;
+import hei.school.championship.dao.operations.PlayerStatsCrudOperations;
 import hei.school.championship.endpoint.rest.PlayerRequest;
 import hei.school.championship.entity.Player;
+import hei.school.championship.entity.PlayerStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PlayerService {
     private final PlayerCrudOperations playerCrudOperations;
+    private final PlayerStatsCrudOperations playerStatsCrudOperations;
 
     public List<Player> getAllPlayers(int page, int size) {
         return playerCrudOperations.getAll(page, size);
@@ -28,6 +31,10 @@ public class PlayerService {
 
     public List<Player> getPlayersByIdClub(String idClub) {
         return playerCrudOperations.findByIdClub(idClub);
+    }
+
+    public PlayerStats getPlayerStatsByIdPLayer(String idPlayer, int seasonYear) {
+        return playerStatsCrudOperations.findByPlayerId(idPlayer, seasonYear);
     }
 
     public List<Player> createOrUpdatePlayers(List<PlayerRequest> playerRequests) {

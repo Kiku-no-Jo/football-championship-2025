@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -78,7 +79,7 @@ public class ClubRestController {
     }
 
     @GetMapping("/clubs/statistics/{seasonYear}")
-    public ResponseEntity<Object> getClubStatistics(@PathVariable String seasonYear) {
-        return null ;
+    public ResponseEntity<Object> getClubStatistics(@PathVariable int seasonYear) {
+        return ResponseEntity.ok(clubService.getClubStatsBySeasonYear(seasonYear)) ;
     }
 }

@@ -30,7 +30,6 @@ public class MatchRestMapper {
         response.setMatchDatetime(match.getMatchDateTime());
         response.setActualStatus(match.getActualStatus());
 
-        // Fetch and map scorers in one go
         List<MatchScorer> allScorers = scorerCrudOperations.findByMatchId(match.getId());
 
         response.setClubPlayingHome(buildMatchClub(

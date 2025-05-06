@@ -1,10 +1,12 @@
 package hei.school.championship.service;
 
 import hei.school.championship.dao.operations.ClubCrudOperations;
+import hei.school.championship.dao.operations.ClubStatsCrudOperations;
 import hei.school.championship.dao.operations.CoachCrudOperations;
 import hei.school.championship.dao.operations.PlayerCrudOperations;
 import hei.school.championship.endpoint.rest.ClubRequest;
 import hei.school.championship.entity.Club;
+import hei.school.championship.entity.ClubStats;
 import hei.school.championship.entity.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubService {
     private final ClubCrudOperations clubCrudOperations;
-    private final CoachCrudOperations coachCrudOperations;
+    private final ClubStatsCrudOperations clubStatsCrudOperations;
 
     public List<Club> getAllClubs(int page, int size) {
         return clubCrudOperations.getAll(page, size);
@@ -28,6 +30,10 @@ public class ClubService {
 
     public List<Club> saveAll(List<Club> clubs) {
         return clubCrudOperations.saveAll(clubs);
+    }
+
+    public List<ClubStats> getClubStatsBySeasonYear(int seasonYear) {
+        return  clubStatsCrudOperations.getAllBySeasonYear(seasonYear);
     }
 
     public List<Club> createOrUpdateClubs(List<ClubRequest> clubRequests) {

@@ -11,8 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlayingTime {
-    private String id;
-    private int value;
-    private DurationUnit durationUnit;
+public class PlayerStats {
+    private Player player;
+    private int seasonYear;
+    private int scoredGoals;
+    private PlayingTime playingTime;
 }

@@ -118,11 +118,18 @@ CREATE TABLE player_statistic
     player_id          VARCHAR(36)    NOT NULL,
     season_year        INT            NOT NULL,
     scored_goals       INT            NOT NULL DEFAULT 0,
-    playing_time_value DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    playing_time_unit  duration_unit  NOT NULL DEFAULT 'MINUTE', -- Ito koa miovq
+    playing_time_id    VARCHAR(36)  NOT NULL,
     PRIMARY KEY (player_id, season_year),
     FOREIGN KEY (player_id) REFERENCES player (id),
-    FOREIGN KEY (season_year) REFERENCES season (year)
+    FOREIGN KEY (season_year) REFERENCES season (year),
+    FOREIGN KEY (playing_time_id) REFERENCES playing_time (id)
+);
+
+CREATE TABLE playing_time
+    (
+        id VARCHAR(36) NOT NULL PRIMARY KEY,
+        value DECIMAL(10, 2) NOT NULL DEFAULT 0,
+        time_unit duration_unit NOT NULL DEFAULT 'MINUTE'
 );
 
 Central
