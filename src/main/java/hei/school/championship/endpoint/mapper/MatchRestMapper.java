@@ -2,15 +2,18 @@ package hei.school.championship.endpoint.mapper;
 
 import hei.school.championship.dao.mapper.PlayerMapper;
 import hei.school.championship.dao.operations.MatchScorerCrudOperations;
+import hei.school.championship.dao.operations.PlayerCrudOperations;
 import hei.school.championship.endpoint.rest.MatchResponse;
 import hei.school.championship.entity.Match;
 import hei.school.championship.entity.MatchScorer;
 import hei.school.championship.entity.Club;
+import hei.school.championship.entity.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class MatchRestMapper {
     private final PlayerMapper playerMapper;
     private final MatchScorerCrudOperations scorerCrudOperations;
+    private final PlayerCrudOperations playerCrudOperations;
 
     public MatchResponse toResponse(Match match) {
         MatchResponse response = new MatchResponse();
@@ -59,20 +63,22 @@ public class MatchRestMapper {
     }
 
     private List<MatchResponse.Scorer> mapScorers(List<MatchScorer> matchScorers) {
-        MatchResponse.PlayerMinimalInfo sP = new MatchResponse.PlayerMinimalInfo();
-        sP.getId();
-        sP.getName();
-        sP.getNumber();
         return matchScorers.stream()
+                .filter(Objects::nonNull) // Filter null scorers
                 .map(scorer -> {
-                    MatchResponse.Scorer s = new MatchResponse.Scorer();
-                    s.setMinuteOfGoal(scorer.getGoalTime());
-                    s.setOwnGoal(scorer.isOwnGoal());
+                    MatchResponse.Scorer responseScorer = new MatchResponse.Scorer();
+                    responseScorer.setMinuteOfGoal(scorer.getGoalTime());
+                    responseScorer.setOwnGoal(scorer.isOwnGoal());
 
-                    // Player info should come from joined query in MatchScorerCrudOperations
+                    if (scorer.getPlayer() != null) {
+                        MatchResponse.PlayerMinimalInfo playerInfo = new MatchResponse.PlayerMinimalInfo();
+                        playerInfo.setId(scorer.getPlayer().getId());
+                        playerInfo.setName(scorer.getPlayer().getName());
+                        playerInfo.setNumber(scorer.getPlayer().getNumber());
+                        responseScorer.setPlayer(playerInfo);
+                    }
 
-                    s.setPlayer(sP);
-                    return s;
+                    return responseScorer;
                 })
                 .collect(Collectors.toList());
     }
