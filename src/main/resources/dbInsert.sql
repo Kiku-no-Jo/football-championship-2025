@@ -15,6 +15,41 @@ VALUES ('P01', 'Pedri', 8, 'MIDFIELDER', 'Spain', 21, 'C01'),           -- Chang
        ('P05', 'Mikel Oyarzabal', 10, 'GOAL_KEEPER', 'Spain', 27, 'C05');
 -- Changed to C05 (Sociedad)
 
+-- Additional players for Club C01 (e.g., FC Barcelona)
+INSERT INTO player (id, name, number, position, nationality, age, club_id)
+VALUES ('P05', 'Robert Lewandowski', 9, 'STRIKER', 'Poland', 35, 'C01'),
+       ('P07', 'Gavi', 6, 'MIDFIELDER', 'Spain', 19, 'C01'),
+       ('P08', 'Ronald Araújo', 4, 'DEFENSE', 'Uruguay', 24, 'C01'),
+       ('P09', 'Marc-André ter Stegen', 1, 'GOAL_KEEPER', 'Germany', 31, 'C01');
+
+-- Additional players for Club C02 (e.g., Real Madrid)
+INSERT INTO player (id, name, number, position, nationality, age, club_id)
+VALUES ('P10', 'Jude Bellingham', 5, 'MIDFIELDER', 'England', 20, 'C02'),
+       ('P11', 'Thibaut Courtois', 1, 'GOAL_KEEPER', 'Belgium', 31, 'C02'),
+       ('P12', 'David Alaba', 4, 'DEFENSE', 'Austria', 31, 'C02'),
+       ('P13', 'Rodrygo', 11, 'STRIKER', 'Brazil', 22, 'C02');
+
+-- Additional players for Club C03 (e.g., Atlético Madrid)
+INSERT INTO player (id, name, number, position, nationality, age, club_id)
+VALUES ('P14', 'Jan Oblak', 13, 'GOAL_KEEPER', 'Slovenia', 30, 'C03'),
+       ('P15', 'José Giménez', 2, 'DEFENSE', 'Uruguay', 28, 'C03'),
+       ('P16', 'Ángel Correa', 10, 'STRIKER', 'Argentina', 28, 'C03'),
+       ('P17', 'Koke', 6, 'MIDFIELDER', 'Spain', 31, 'C03');
+
+-- Additional players for Club C04 (e.g., Sevilla)
+INSERT INTO player (id, name, number, position, nationality, age, club_id)
+VALUES ('P18', 'Yassine Bounou', 13, 'GOAL_KEEPER', 'Morocco', 32, 'C04'),
+       ('P19', 'Jesús Navas', 16, 'DEFENSE', 'Spain', 37, 'C04'),
+       ('P20', 'Ivan Rakitić', 11, 'MIDFIELDER', 'Croatia', 35, 'C04'),
+       ('P21', 'Youssef En-Nesyri', 15, 'STRIKER', 'Morocco', 26, 'C04');
+
+-- Additional players for Club C05 (e.g., PSG)
+INSERT INTO player (id, name, number, position, nationality, age, club_id)
+VALUES ('P22', 'Kylian Mbappé', 7, 'STRIKER', 'France', 24, 'C05'),
+       ('P23', 'Achraf Hakimi', 2, 'DEFENSE', 'Morocco', 24, 'C05'),
+       ('P24', 'Marquinhos', 5, 'DEFENSE', 'Brazil', 29, 'C05'),
+       ('P25', 'Marco Verratti', 6, 'MIDFIELDER', 'Italy', 30, 'C05');
+
 -- Season inserts (corrected - no issues found)
 INSERT INTO season (id, year, alias, status)
 VALUES ('S01', 2021, 'La Liga 2021/2022', 'FINISHED'),
@@ -40,8 +75,18 @@ VALUES (1, 'Xavi Hernández', 'Spain'),
        (5, 'Imanol Alguacil', 'Spain');
 
 -- Then update each club with their coach
-UPDATE club SET coach_id = '1' WHERE id = 'C05';  -- Barcelona → Xavi
-UPDATE club SET coach_id = '2' WHERE id = 'C04';  -- Madrid → Ancelotti
-UPDATE club SET coach_id = '3' WHERE id = 'C03';  -- Atlético → Simeone
-UPDATE club SET coach_id = '4' WHERE id = 'C02';  -- Sevilla → Flores
-UPDATE club SET coach_id = '5' WHERE id = 'C01';  -- Sociedad → Alguacil
+UPDATE club
+SET coach_id = '1'
+WHERE id = 'C05'; -- Barcelona → Xavi
+UPDATE club
+SET coach_id = '2'
+WHERE id = 'C04'; -- Madrid → Ancelotti
+UPDATE club
+SET coach_id = '3'
+WHERE id = 'C03'; -- Atlético → Simeone
+UPDATE club
+SET coach_id = '4'
+WHERE id = 'C02'; -- Sevilla → Flores
+UPDATE club
+SET coach_id = '5'
+WHERE id = 'C01'; -- Sociedad → Alguacil

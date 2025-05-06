@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +18,10 @@ public class Match {
     private Club clubPlayingHome;
     private Club clubPlayingAway;
     private String stadium;
-    private LocalDate matchDateTime;
+    private Timestamp matchDateTime;
     private MatchStatus actualStatus;
+    private int homeScore;
+    private int awayScore;
+    private int seasonYear;
 
 }

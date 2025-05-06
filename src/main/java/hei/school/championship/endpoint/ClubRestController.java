@@ -2,8 +2,11 @@ package hei.school.championship.endpoint;
 
 import hei.school.championship.endpoint.mapper.ClubRestMapper;
 import hei.school.championship.endpoint.mapper.CoachRestMapper;
+import hei.school.championship.endpoint.rest.ClubRequest;
+import hei.school.championship.endpoint.rest.PlayerRequest;
 import hei.school.championship.entity.Club;
 import hei.school.championship.entity.Coach;
+import hei.school.championship.entity.Player;
 import hei.school.championship.service.ClubService;
 import hei.school.championship.service.CoachService;
 import hei.school.championship.service.PlayerService;
@@ -41,26 +44,24 @@ public class ClubRestController {
     }
 
     @PutMapping("/clubs")
-    public ResponseEntity<Object> updateClub(@RequestBody Club club) {
-        return null ;
+    public ResponseEntity<Object> updateClub(@RequestBody List<ClubRequest> clubRequests) {
+        List<Club> savedClubs = clubService.createOrUpdateClubs(clubRequests);
+        return ResponseEntity.ok(savedClubs);
     }
 
     @GetMapping("/clubs/{id}/players")
-    public ResponseEntity<Object> getClubPlayers(@RequestParam(required = true) @PathVariable String id) {
+    public ResponseEntity<List<Player>> getClubPlayers(@PathVariable String id) {
         try {
             return ResponseEntity.ok(playerService.getPlayersByIdClub(id));
         }catch (ClientException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (ServerException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (NotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
+            return (ResponseEntity<List<Player>>) ResponseEntity.status(NOT_FOUND);
         }
     }
 
     @PutMapping("/clubs/{id}/players")
-    public ResponseEntity<Object> updateClubPlayers(@RequestBody Club club, @PathVariable String id) {
-        return null ;
+    public ResponseEntity<Object> updateClubPlayers(@RequestBody List<PlayerRequest> playerRequests, @PathVariable String id) {
+        List<Player> savedPlayers = playerService.createOrUpdatePlayers(playerRequests);
+        return ResponseEntity.ok(savedPlayers);
     }
 
     @PostMapping("/clubs/{id}/players")

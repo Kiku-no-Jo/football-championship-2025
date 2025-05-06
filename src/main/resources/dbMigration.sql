@@ -61,17 +61,28 @@ CREATE TABLE season
 CREATE TABLE match
 (
     id             VARCHAR(36) PRIMARY KEY,
-    season_year    INT          NOT NULL,
     club_home_id   VARCHAR(36)  NOT NULL,
     club_away_id   VARCHAR(36)  NOT NULL,
     stadium        VARCHAR(100) NOT NULL,
     match_datetime TIMESTAMP    NOT NULL,
     status         match_status NOT NULL DEFAULT 'NOT_STARTED', -- Eto koa niova
-    home_score     INT                   DEFAULT 0,
-    away_score     INT                   DEFAULT 0,
+    season_year    INT          NOT NULL,
+    home_score INTEGER DEFAULT 0,
+    away_score INTEGER DEFAULT 0,
     FOREIGN KEY (club_home_id) REFERENCES club (id),
     FOREIGN KEY (club_away_id) REFERENCES club (id),
     FOREIGN KEY (season_year) REFERENCES season (year)
+);
+
+CREATE TABLE match_scorers
+(
+    id          VARCHAR PRIMARY KEY,
+    match_id    VARCHAR NOT NULL REFERENCES match (id),
+    club_id     VARCHAR NOT NULL REFERENCES club (id),
+    player_id   VARCHAR NOT NULL REFERENCES player (id),
+    goal_time   INTEGER NOT NULL, -- in minutes
+    is_own_goal BOOLEAN DEFAULT false,
+    is_penalty  BOOLEAN DEFAULT false
 );
 
 CREATE TABLE goal
