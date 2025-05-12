@@ -1,0 +1,35 @@
+[
+  {
+    "id": "club-1",
+    "name": "Club 1",
+    "acronym": "C1",
+    "yearCreation": 1902,
+    "stadium": "Stade 1",
+    "coach": {
+      "name": "string",
+      "nationality": "string"
+    }
+  },
+  {
+    "id": "club-2",
+    "name": "Club 2",
+    "acronym": "C2",
+    "yearCreation": 1905,
+    "stadium": "Stade 2",
+    "coach": {
+      "name": "string",
+      "nationality": "string"
+    }
+  },
+  {
+    "id": "club-3",
+    "name": "Club 3",
+    "acronym": "C3",
+    "yearCreation": 1910,
+    "stadium": "Stade 3",
+    "coach": {
+      "name": "string",
+      "nationality": "string"
+    }
+  }
+]

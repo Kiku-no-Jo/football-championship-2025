@@ -5,7 +5,6 @@ import hei.school.championship.endpoint.mapper.CoachRestMapper;
 import hei.school.championship.endpoint.rest.ClubRequest;
 import hei.school.championship.endpoint.rest.PlayerRequest;
 import hei.school.championship.entity.Club;
-import hei.school.championship.entity.Coach;
 import hei.school.championship.entity.Player;
 import hei.school.championship.service.ClubService;
 import hei.school.championship.service.CoachService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -32,14 +30,14 @@ public class ClubRestController {
     private final ClubRestMapper clubRestMapper;
 
     @GetMapping("/clubs")
-    public ResponseEntity<Object> getClubs(@RequestParam(required = false,defaultValue = "1") int page, @RequestParam(required = false,defaultValue = "5") int size){
+    public ResponseEntity<Object> getClubs(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "5") int size) {
         try {
             return ResponseEntity.ok(clubService.getAllClubs(page, size));
-        }catch (ClientException e) {
+        } catch (ClientException e) {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (ServerException e) {
+        } catch (ServerException e) {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (NotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
         }
     }
@@ -54,7 +52,7 @@ public class ClubRestController {
     public ResponseEntity<List<Player>> getClubPlayers(@PathVariable String id) {
         try {
             return ResponseEntity.ok(playerService.getPlayersByIdClub(id));
-        }catch (ClientException e) {
+        } catch (ClientException e) {
             return (ResponseEntity<List<Player>>) ResponseEntity.status(NOT_FOUND);
         }
     }
@@ -66,20 +64,18 @@ public class ClubRestController {
     }
 
     @PostMapping("/clubs/{id}/players")
-    public ResponseEntity<Object> addClubPlayers(@RequestBody List<Club> clubs, @PathVariable String id) {
-        try {
-            return ResponseEntity.ok(clubService.saveAll(clubs));
-        }catch (ClientException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (ServerException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }catch (NotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<Object> addClubPlayers(@RequestBody List<PlayerRequest> playerRequests, @PathVariable String id) {
+        List<Player> savedPlayers = playerService.createOrUpdateClubPlayers(playerRequests, id);
+        return ResponseEntity.ok(savedPlayers);
+    }
+
+    @GetMapping("/trades")
+    public ResponseEntity<Object> getTrades(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "5") int size) {
+        return ResponseEntity.ok(clubService.getTrades(page, size));
     }
 
     @GetMapping("/clubs/statistics/{seasonYear}")
     public ResponseEntity<Object> getClubStatistics(@PathVariable int seasonYear) {
-        return ResponseEntity.ok(clubService.getClubStatsBySeasonYear(seasonYear)) ;
+        return ResponseEntity.ok(clubService.getClubStatsBySeasonYear(seasonYear));
     }
 }

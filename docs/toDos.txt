@@ -1,1 +1,15 @@
 Focus on what can be done
+
+Now i want to get statistic of a player in seasonYear through calculation as this is the expected response:{
+  "scoredGoals": 0,
+  "playingTime": {
+    "value": 0,
+    "durationUnit": "SECOND"
+  }
+} from this endpoint /players/{id}/statistics/{seasonYear}
+
+SELECT COUNT(*) AS goal_count
+        FROM match_scorers ms
+        JOIN match m ON ms.match_id = m.id
+        WHERE ms.player_id = 'p-st-1'
+          AND m.season_year = 2024

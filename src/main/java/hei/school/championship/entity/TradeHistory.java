@@ -6,13 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.sql.Timestamp;
+
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Coach {
-    private int id;
-    private String name;
-    private String nationality;
+public class TradeHistory {
+    private String id;
+    private Player player;
+    private Club fromClub;
+    private Club toClub;
+    @Setter
+    private Timestamp transferDate;
+
 }

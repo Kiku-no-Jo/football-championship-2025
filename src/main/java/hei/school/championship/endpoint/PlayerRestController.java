@@ -8,6 +8,7 @@ import hei.school.championship.service.exception.ClientException;
 import hei.school.championship.service.exception.NotFoundException;
 import hei.school.championship.service.exception.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,34 +29,44 @@ public class PlayerRestController {
     public ResponseEntity<Object> getPlayers(
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
-            @RequestParam(required = false, defaultValue = "false") boolean groupByClub) {
+            @RequestParam(required = false, defaultValue = "false") boolean groupByClub,
+            @RequestParam(required = false) Integer ageMinimum,
+            @RequestParam(required = false) Integer ageMaximum) {
 
         try {
+            // Get all paginated players first
+            List<Player> filteredPlayers = playerService.getAllPlayers(page, size).stream()
+
+                    // Filter by age range if parameters are provided
+                    .filter(player -> {
+                        boolean meetsMin = (ageMinimum == null || player.getAge() >= ageMinimum);
+                        boolean meetsMax = (ageMaximum == null || player.getAge() <= ageMaximum);
+                        return meetsMin && meetsMax;
+                    })
+                    .sorted(Comparator.comparing(Player::getName))
+                    .collect(Collectors.toList());
+
             if (groupByClub) {
-                // Stream players grouped by club and sorted by name
-                Map<String, List<Player>> playersByClub = playerService.getAllPlayers(page, size).stream()
-                        .sorted(Comparator.comparing(Player::getName))
+                // Group the filtered players by club
+                Map<String, List<Player>> playersByClub = filteredPlayers.stream()
                         .collect(Collectors.groupingBy(
                                 player -> player.getClub() != null ? player.getClub().getName() : "No Club",
-                                TreeMap::new,  // Sort clubs alphabetically
+                                TreeMap::new,
                                 Collectors.toList()
                         ));
 
                 return ResponseEntity.ok(playersByClub);
             } else {
-                // Return regular paginated list sorted by name
-                List<Player> players = playerService.getAllPlayers(page, size).stream()
-                        .sorted(Comparator.comparing(Player::getName))
-                        .collect(Collectors.toList());
-
-                return ResponseEntity.ok(players);
+                return ResponseEntity.ok(filteredPlayers);
             }
+
         } catch (ClientException | NotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (ServerException e) {
-            return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
     @PutMapping("/players")
     public ResponseEntity<List<Player>> createOrUpdatePlayers(@RequestBody List<PlayerRequest> playerRequests) {
@@ -65,6 +76,6 @@ public class PlayerRestController {
 
     @GetMapping("/players/{idPlayer}/statistics/{seasonYear}")
     public ResponseEntity<Object> getPlayerStatistics(@PathVariable String idPlayer, @PathVariable int seasonYear) {
-        return ResponseEntity.ok(playerService.getPlayerStatsByIdPLayer(idPlayer, seasonYear));
+        return ResponseEntity.ok(playerService.getPlayerStats(idPlayer, seasonYear));
     }
 }

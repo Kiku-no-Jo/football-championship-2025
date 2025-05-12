@@ -73,7 +73,7 @@ public class ClubCrudOperations implements CrudOperations<Club> {
              PreparedStatement statement =
                      connection.prepareStatement("insert into club (id, name, acronym, year_creation, stadium, coach_id) values (?, ?, ?, ?, ?, ?)"
                              + " on conflict (id) do nothing"
-                             + " returning id, name, acronym, yearCreation, stadium, coach_id");) {
+                             + " returning id, name, acronym, year_creation, stadium, coach_id");) {
             entities.forEach(entityToSave -> {
                 try {
                     statement.setString(1, entityToSave.getId());
@@ -81,7 +81,7 @@ public class ClubCrudOperations implements CrudOperations<Club> {
                     statement.setString(3, entityToSave.getAcronym());
                     statement.setInt(4, entityToSave.getYearCreation());
                     statement.setString(5, entityToSave.getStadium());
-                    statement.setString(6, entityToSave.getCoach().getId());
+                    statement.setInt(6, entityToSave.getCoach().getId());
                     statement.addBatch(); // group by batch so executed as one query in database
                 } catch (SQLException e) {
                     throw new ServerException(e);

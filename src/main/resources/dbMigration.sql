@@ -67,8 +67,8 @@ CREATE TABLE match
     match_datetime TIMESTAMP    NOT NULL,
     status         match_status NOT NULL DEFAULT 'NOT_STARTED', -- Eto koa niova
     season_year    INT          NOT NULL,
-    home_score INTEGER DEFAULT 0,
-    away_score INTEGER DEFAULT 0,
+    home_score     INTEGER               DEFAULT 0,
+    away_score     INTEGER               DEFAULT 0,
     FOREIGN KEY (club_home_id) REFERENCES club (id),
     FOREIGN KEY (club_away_id) REFERENCES club (id),
     FOREIGN KEY (season_year) REFERENCES season (year)
@@ -83,6 +83,18 @@ CREATE TABLE match_scorers
     goal_time   INTEGER NOT NULL, -- in minutes
     is_own_goal BOOLEAN DEFAULT false,
     is_penalty  BOOLEAN DEFAULT false
+);
+
+CREATE TABLE trade_history
+(
+    id            VARCHAR(36) PRIMARY KEY,
+    player_id     VARCHAR(36) NOT NULL,
+    from_club_id  VARCHAR(36),
+    to_club_id    VARCHAR(36) NOT NULL,
+    transfer_date TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (player_id) REFERENCES player (id),
+    FOREIGN KEY (from_club_id) REFERENCES club (id),
+    FOREIGN KEY (to_club_id) REFERENCES club (id)
 );
 
 CREATE TABLE goal
@@ -115,10 +127,10 @@ CREATE TABLE club_statistic
 
 CREATE TABLE player_statistic
 (
-    player_id          VARCHAR(36)    NOT NULL,
-    season_year        INT            NOT NULL,
-    scored_goals       INT            NOT NULL DEFAULT 0,
-    playing_time_id    VARCHAR(36)  NOT NULL,
+    player_id       VARCHAR(36) NOT NULL,
+    season_year     INT         NOT NULL,
+    scored_goals    INT         NOT NULL DEFAULT 0,
+    playing_time_id VARCHAR(36) NOT NULL,
     PRIMARY KEY (player_id, season_year),
     FOREIGN KEY (player_id) REFERENCES player (id),
     FOREIGN KEY (season_year) REFERENCES season (year),
@@ -126,10 +138,10 @@ CREATE TABLE player_statistic
 );
 
 CREATE TABLE playing_time
-    (
-        id VARCHAR(36) NOT NULL PRIMARY KEY,
-        value DECIMAL(10, 2) NOT NULL DEFAULT 0,
-        time_unit duration_unit NOT NULL DEFAULT 'MINUTE'
+(
+    id        VARCHAR(36)    NOT NULL PRIMARY KEY,
+    value     DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    time_unit duration_unit  NOT NULL DEFAULT 'MINUTE'
 );
 
 Central

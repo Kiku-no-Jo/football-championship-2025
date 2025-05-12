@@ -111,5 +111,21 @@ public class SeasonCrudOperations implements CrudOperations<Season> {
         }
     }
 
+    public Season findBySeasonYear(int seasonYear) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "select id, year, alias, status from season where year = ?")) {
+            statement.setInt(1, seasonYear);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return seasonMapper.apply(resultSet);
+                }
+                throw new NotFoundException("Season.id=" + seasonYear + " not found");
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+    }
+
 
 }

@@ -66,6 +66,24 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
         }
     }
 
+    public Player findSimplePlayerById(String id) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "select id, name, number, position, nationality, age from player where id = ?")) {
+            statement.setString(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return playerSimpleMapper.apply(resultSet);
+                }
+                throw new NotFoundException("Player.id=" + id + " not found");
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+    }
+
+
+
     @SneakyThrows
     @Override
     public List<Player> saveAll(List<Player> entities) {
@@ -103,6 +121,37 @@ public class PlayerCrudOperations implements CrudOperations<Player> {
             return players;
         } catch (SQLException e) {
             throw new ServerException(e);
+        }
+    }
+
+    @SneakyThrows
+    public List<Player> saveAllClubPlayer(List<Player> entities) {
+        List<Player> players = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement("insert into player (id, name, number, position, nationality, age, club_id) values (?, ?, ?, CAST(? AS player_position), ?, ?, ?)"
+                             + " on conflict (id) do nothing"
+                             + " returning id, name, number, position, nationality, age, club_id");) {
+            entities.forEach(entityToSave -> {
+                try {
+                    statement.setString(1, entityToSave.getId());
+                    statement.setString(2, entityToSave.getName());
+                    statement.setInt(3, entityToSave.getNumber());
+                    statement.setString(4, entityToSave.getPosition().name());
+                    statement.setString(5, entityToSave.getNationality());
+                    statement.setInt(6, entityToSave.getAge());
+                    statement.setString(7, entityToSave.getClub().getId());
+                    statement.addBatch(); // group by batch so executed as one query in database
+                } catch (SQLException e) {
+                    throw new ServerException(e);
+                }
+            });
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    players.add(playerMapper.apply(resultSet));
+                }
+            }
+            return players;
         }
     }
 

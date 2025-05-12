@@ -63,5 +63,72 @@ public class MatchScorerCrudOperations {
             throw new ServerException(e);
         }
     }
+
+    public List<MatchScorer> findByPlayerId(String playerId) {
+        List<MatchScorer> scorers = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("select id, match_id, club_id, player_id, goal_time, is_own_goal from match_scorers where player_id = ?")) {
+            statement.setString(1, playerId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    MatchScorer scorer = matchScorerMapper.apply(resultSet);
+                    scorers.add(scorer);
+                }
+                return scorers;
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+    }
+
+    public List<String> findScoringMatchIdsByPlayerIdAndSeason(String playerId, int seasonYear) {
+        List<String> matchIds = new ArrayList<>();
+        String sql = """
+        SELECT DISTINCT ms.match_id
+        FROM match_scorers ms
+        JOIN match m ON ms.match_id = m.id
+        WHERE ms.player_id = ?
+          AND m.season_year = ?
+    """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerId);
+            statement.setInt(2, seasonYear);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    matchIds.add(rs.getString("match_id"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+
+        return matchIds;
+    }
+
+    public int countGoalsByPlayerIdAndSeason(String playerId, int seasonYear) {
+        String sql = """
+        SELECT COUNT(*) AS goal_count
+        FROM match_scorers ms
+        JOIN match m ON ms.match_id = m.id
+        WHERE ms.player_id = ?
+          AND m.season_year = ?
+    """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerId);
+            statement.setInt(2, seasonYear);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) return rs.getInt("goal_count");
+            }
+        } catch (SQLException e) {
+            throw new ServerException(e);
+        }
+
+        return 0;
+    }
+
 }
 

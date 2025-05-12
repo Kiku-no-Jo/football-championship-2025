@@ -1,13 +1,11 @@
 package hei.school.championship.service;
 
-import hei.school.championship.dao.operations.ClubCrudOperations;
-import hei.school.championship.dao.operations.ClubStatsCrudOperations;
-import hei.school.championship.dao.operations.CoachCrudOperations;
-import hei.school.championship.dao.operations.PlayerCrudOperations;
+import hei.school.championship.dao.operations.*;
 import hei.school.championship.endpoint.rest.ClubRequest;
 import hei.school.championship.entity.Club;
 import hei.school.championship.entity.ClubStats;
 import hei.school.championship.entity.Player;
+import hei.school.championship.entity.TradeHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,7 @@ import java.util.stream.Collectors;
 public class ClubService {
     private final ClubCrudOperations clubCrudOperations;
     private final ClubStatsCrudOperations clubStatsCrudOperations;
+    private final TradeHistoryCrudOperations tradeHistoryCrudOperations;
 
     public List<Club> getAllClubs(int page, int size) {
         return clubCrudOperations.getAll(page, size);
@@ -35,6 +34,12 @@ public class ClubService {
     public List<ClubStats> getClubStatsBySeasonYear(int seasonYear) {
         return  clubStatsCrudOperations.getAllBySeasonYear(seasonYear);
     }
+
+    public List<TradeHistory> getTrades(int page, int size) {
+        return tradeHistoryCrudOperations.getAll(page, size);
+    }
+
+
 
     public List<Club> createOrUpdateClubs(List<ClubRequest> clubRequests) {
         // Convert ClubRequest to Club entities
